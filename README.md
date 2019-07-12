@@ -33,4 +33,4 @@ Jenkins Url: http://vagrant_devopsbox_hostname:8081/
 
 You could get Jenkins Admin password directly from DevopsBox or you could check your Ansible Build logs its written over there
 
-Enyoj (y)
+Enyoj using your Vagrant Devops Box (y)
