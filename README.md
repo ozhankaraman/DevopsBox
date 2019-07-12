@@ -27,8 +27,8 @@ vagrant ssh
 ### Notes:
 Port 80,443,8080,8081 are forwarded to the DevopsBox and Docker, Jenkins and Gitlab is installed on same Vagrant Environment and their access url's are below
 ```
-GitLab Url:  http://vagrant_box_hostname/
-Jenkins Url: http://vagrant_box_hostname:8081/ 
+GitLab Url:  http://vagrant_devopsbox_hostname/
+Jenkins Url: http://vagrant_devopsbox_hostname:8081/ 
 ```
 
 You could get Jenkins Admin password directly from DevopsBox or you could check your Ansible Build logs its written over there
