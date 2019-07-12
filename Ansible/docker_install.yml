@@ -1,0 +1,30 @@
+---
+- name: Add Docker GPG key
+  apt_key: url=https://download.docker.com/linux/ubuntu/gpg
+
+- name: Install Prereq Packages For Docker
+  apt:
+    name: "{{item}}"
+    state: present
+    update_cache: yes
+  with_items:
+    - apt-transport-https
+    - ca-certificates
+    - gnupg2
+    - software-properties-common
+    - curl
+
+- name: Add Docker APT repository
+  apt_repository:
+    repo: deb [arch=amd64] https://download.docker.com/linux/ubuntu {{ ansible_distribution_release }} stable
+
+- name: Install list of packages
+  apt:
+    name: docker-ce
+    state: present
+    update_cache: yes
+
+- name: Add vagrant user to docker group
+  user:
+    name: vagrant
+    groups: docker

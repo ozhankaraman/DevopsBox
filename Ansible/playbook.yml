@@ -1,0 +1,30 @@
+---
+- hosts: all
+  become: yes
+  become_user: root
+  become_method: sudo
+  gather_facts: false
+
+  pre_tasks:
+    - raw: sudo apt-get -y install python-minimal
+
+  tasks:
+    - name: Load Variables
+      include_vars:
+        file: variables.yml
+
+    - name: dev locale
+      action: command update-locale LC_ALL=en_US.UTF-8
+
+    - name: set default locale
+      lineinfile: dest=/etc/default/locale
+        regexp="LC_ALL"
+        line="LC_ALL=\"en_US.UTF-8\""
+   
+    - name: Gather facts manually
+      setup:
+
+    - include: docker_install.yml
+    - include: jenkins_install.yml
+    - include: gitlab_install.yml
+

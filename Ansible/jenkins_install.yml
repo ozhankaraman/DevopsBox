@@ -1,0 +1,56 @@
+---
+- name: Add Jenkins GPG key
+  apt_key: url=https://pkg.jenkins.io/debian-stable/jenkins.io.key
+
+- name: Install Openjdk Packages For Jenkins 
+  apt:
+    name: openjdk-8-jdk
+    state: present
+
+- name: Add Jenkins APT repository
+  apt_repository:
+    repo: deb https://pkg.jenkins.io/debian-stable binary/
+
+- name: Install Jenkins 
+  apt:
+    name: jenkins
+    state: present
+    update_cache: yes
+
+#- name: Allow Jenkins Port on Firewall
+#  ufw:
+#    rule: allow
+#    port: 8080
+#    porto: tcp
+
+- name: Wait for Jenkins Initial Setup to Complete
+  wait_for:
+    path: /var/lib/jenkins/secrets/initialAdminPassword
+    state: present
+
+#- pause:
+#    seconds: 20 
+
+#- debug: msg="Admin Password for Jenkins Admin is {{lookup('file', '/var/lib/jenkins/secrets/initialAdminPassword') }}"
+
+- name: Sleep for 30 seconds and continue with play
+  wait_for: 
+    timeout: 30
+
+- name: Get init password Jenkins
+  shell: cat /var/lib/jenkins/secrets/initialAdminPassword
+  changed_when: false
+  register: result
+
+- name: Print Jenkins Admin Initialization Password
+  debug:
+    var: result.stdout
+
+- name: Changing Jenkins Default Port from 8080 to 8081 
+  lineinfile: dest=/etc/default/jenkins regexp="^HTTP_PORT=8080" line="HTTP_PORT=8081"
+
+- name: Restart Jenkins Service
+  systemd:
+    name: jenkins
+    state: restarted
+

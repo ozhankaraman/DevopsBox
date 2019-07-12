@@ -1,0 +1,38 @@
+---
+- name: Install Prereq Packages For Gitlab
+  apt:
+    name:
+    - postfix
+    - mailutils
+    - ca-certificates
+    - curl 
+    - openssh-server
+    state: present
+
+- name: Install GitLab repository
+  get_url:
+    url: https://packages.gitlab.com/install/repositories/gitlab/gitlab-ce/script.deb.sh
+    dest: /tmp/script.deb.sh
+    mode: 0777
+
+- name: Install GitLab Repo Script
+  shell: /tmp/script.deb.sh
+
+- name: Install GitLab CE
+  package:
+    name:    
+    - gitlab-ce
+    state: latest 
+    update_cache: yes
+
+- name: Configuring External Url for Gitlab
+  lineinfile: dest=/etc/gitlab/gitlab.rb regexp="^external_url" line="external_url 'http://{{ gitlab_hostname }}'"
+
+- name: Restart with reconfigure
+  command: gitlab-ctl reconfigure
+
+- name: GitLab Restart with restart
+  command: gitlab-ctl restart
+
+#- name: GitLab gitlab-runsvdir status
+#  command: service gitlab-runsvdir status
